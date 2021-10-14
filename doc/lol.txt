@@ -1,0 +1,8 @@
+cmd[0] = ls 
+cmd[1] = *.txt
+ls *.ffff
+.lllll
+cmd[1][0] == *
+k = cmd[1][1:]
+if f.endswidth(k)
+ls -l
