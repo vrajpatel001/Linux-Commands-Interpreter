@@ -1,0 +1,4 @@
+bin/
+binscripts/__pycache__
+dbhimport/__pycache__
+doc/

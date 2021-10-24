@@ -129,20 +129,73 @@ def listFD (cmd) :
         justls(os.getcwd(), columns, 1)
         os.chdir(path)
 
-def treeFD (cmd):
-    path=os.getcwd()
-    changedir(cmd)
-    startpath = os.getcwd()
-    os.chdir(path)
-    i=1
-    for root, dirs, files in os.walk(startpath):
-        level = root.replace(startpath, '').count(os.sep)
-        indent = '─' * 2 * (level)
-        if i==1:
-            print('{}{}/'.format(indent, os.path.basename(root)))
-            i=i+1        
+# old tree implementation
+
+# def treeFD (cmd):
+#     path=os.getcwd()
+#     changedir(cmd)
+#     startpath = os.getcwd()
+#     os.chdir(path)
+#     i=1
+#     for root, dirs, files in os.walk(startpath):
+#         level = root.replace(startpath, '').count(os.sep)
+#         indent = '─' * 2 * (level)
+#         if i==1:
+#             print('{}{}/'.format(indent, os.path.basename(root)))
+#             i=i+1        
+#         else:
+#             print(' ├{}'.format(indent),'{}/'.format(os.path.basename(root)))
+#         subindent = ' ' * 2 * (level + 1)
+#         for f in files:
+#             print(' │{}'.format(subindent),"└──",'{}'.format(f))
+
+import pathlib
+import sys
+
+from rich import print as rprint
+from rich.filesize import decimal as rdecimal
+from rich.markup import escape as rescape
+from rich.text import Text as rtext
+from rich.tree import Tree as rtree
+
+
+def walk_directory(directory: pathlib.Path, tree: rtree) -> None:
+    """Recursively build a Tree with directory contents."""
+    # Sort dirs first then by filename
+    paths = sorted(
+        pathlib.Path(directory).iterdir(),
+        key=lambda path: (path.is_file(), path.name.lower()),
+    )
+    for path in paths:
+        # Remove hidden files
+        if path.name.startswith("."):
+            continue
+        if path.is_dir():
+            style = "dim" if path.name.startswith("__") else ""
+            branch = tree.add(
+                f"[bold magenta]:open_file_folder: [link file://{path}]{rescape(path.name)}",
+                style=style,
+                guide_style=style,
+            )
+            walk_directory(path, branch)
         else:
-            print(' ├{}'.format(indent),'{}/'.format(os.path.basename(root)))
-        subindent = ' ' * 2 * (level + 1)
-        for f in files:
-            print(' │{}'.format(subindent),"└──",'{}'.format(f))
+            text_filename = rtext(path.name, "green")
+            text_filename.highlight_regex(r"\..*$", "bold red")
+            text_filename.stylize(f"link file://{path}")
+            file_size = path.stat().st_size
+            text_filename.append(f" ({rdecimal(file_size)})", "blue")
+            # icon = "🐍 " if path.suffix == ".py" else "📄 "
+            # tree.add(rtext(icon) + text_filename)
+
+def treeFD (cmd):
+    try:
+        directory = os.path.abspath(cmd[1])
+    except:
+        pass
+    else:
+        tree = rtree(
+            f":open_file_folder: [link file://{directory}]{directory}",
+            guide_style="bold bright_blue",
+        )
+        walk_directory(pathlib.Path(directory), tree)
+        print(tree)
