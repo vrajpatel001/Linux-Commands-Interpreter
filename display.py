@@ -14,6 +14,7 @@ from dbhimport import evaluateme
 from dbhimport import dbhcolors
 from dbhimport import df_ps
 from dbhimport import local_server
+from dbhimport import downloader
 
 from binscripts import sha
 
@@ -93,6 +94,8 @@ def dbhterminal(cmd):
         url_path=os.getcwd()
         local_server.simple_http_server(url_path)
         os.chdir(path)
+    elif(cmd[0]=="wget") :
+        downloader.wget(cmd)
     else :
         try :
             os.system(" ".join(cmd))
