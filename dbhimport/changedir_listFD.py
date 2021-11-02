@@ -150,16 +150,14 @@ def listFD (cmd) :
 #             print(' │{}'.format(subindent),"└──",'{}'.format(f))
 
 import pathlib
-import sys
 
 from rich import print as rprint
-from rich.filesize import decimal as rdecimal
-from rich.markup import escape as rescape
-from rich.text import Text as rtext
-from rich.tree import Tree as rtree
+from rich.filesize import decimal
+from rich.markup import escape
+from rich.text import Text
+from rich.tree import Tree
 
-
-def walk_directory(directory: pathlib.Path, tree: rtree) -> None:
+def walk_directory(directory: pathlib.Path, tree: Tree) -> None:
     """Recursively build a Tree with directory contents."""
     # Sort dirs first then by filename
     paths = sorted(
@@ -171,31 +169,24 @@ def walk_directory(directory: pathlib.Path, tree: rtree) -> None:
         if path.name.startswith("."):
             continue
         if path.is_dir():
-            style = "dim" if path.name.startswith("__") else ""
             branch = tree.add(
-                f"[bold magenta]:open_file_folder: [link file://{path}]{rescape(path.name)}",
-                style=style,
-                guide_style=style,
+                f"[bold magenta]:open_file_folder: [link file://{path}]{escape(path.name)}",
             )
             walk_directory(path, branch)
         else:
-            text_filename = rtext(path.name, "green")
-            text_filename.highlight_regex(r"\..*$", "bold red")
-            text_filename.stylize(f"link file://{path}")
+            text_filename = Text(path.name, "green")
             file_size = path.stat().st_size
-            text_filename.append(f" ({rdecimal(file_size)})", "blue")
-            # icon = "🐍 " if path.suffix == ".py" else "📄 "
-            # tree.add(rtext(icon) + text_filename)
+            text_filename.append(f" ({decimal(file_size)})", "blue")
+            tree.add(text_filename)
 
 def treeFD (cmd):
     try:
         directory = os.path.abspath(cmd[1])
     except:
-        pass
+        print("Incorrect path")
     else:
-        tree = rtree(
+        tree = Tree(
             f":open_file_folder: [link file://{directory}]{directory}",
-            guide_style="bold bright_blue",
         )
         walk_directory(pathlib.Path(directory), tree)
-        print(tree)
+        rprint(tree)
