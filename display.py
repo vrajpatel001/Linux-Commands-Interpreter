@@ -15,6 +15,7 @@ from dbhimport import dbhcolors
 from dbhimport import df_ps
 from dbhimport import local_server
 from dbhimport import downloader
+from dbhimport import pdf_maker
 
 from binscripts import sha
 
@@ -96,6 +97,8 @@ def dbhterminal(cmd):
         os.chdir(path)
     elif(cmd[0]=="wget") :
         downloader.wget(cmd)
+    elif(cmd[0]=="wpdf"):
+        pdf_maker.wpdf(cmd)
     else :
         try :
             os.system(" ".join(cmd))
