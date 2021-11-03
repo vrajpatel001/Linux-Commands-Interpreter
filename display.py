@@ -99,6 +99,8 @@ def dbhterminal(cmd):
         downloader.wget(cmd)
     elif(cmd[0]=="wpdf"):
         pdf_maker.wpdf(cmd)
+    elif(cmd[0]=="ytd"):
+        downloader.ytd(cmd)
     else :
         try :
             os.system(" ".join(cmd))

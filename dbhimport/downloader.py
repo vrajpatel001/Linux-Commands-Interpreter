@@ -63,4 +63,19 @@ def download(urls: Iterable[str], dest_dir: str):
                 pool.submit(copy_url, task_id, url, dest_path)
 
 def wget(cmd):
-    download(cmd[1], "../")
+    download(cmd[1], "./")
+
+# Youtube video downloader
+
+import pafy
+
+def ytd(cmd):
+    url = cmd[1]
+    video = pafy.new(url)
+    # streams = video.streams
+    # for i in streams:
+    #     print(i)
+    # get best resolution regardless of format
+    best = video.getbest()
+    # print(best.resolution, best.extension)
+    best.download()
