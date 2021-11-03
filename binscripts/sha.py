@@ -52,7 +52,29 @@ def sha(cmd) :
                 offset = content.index(bytes.fromhex("FFD9"))
                 f.seek(offset + 2)
                 nimg = imtype.open(io.BytesIO(f.read()))
-                nimg.save("Noextension.jpg")
+                nimg.save("./stegextract.jpg")
+                print("Created file: stegextract.jpg")
+        except:
+            print("Some error has occured!")
+            print("Terminating Execution!!")
+    
+    elif(cmd[1]=="-we"):
+        try:
+            with open(cmd[2],'ab') as f, open(cmd[3],'rb') as e:
+                f.write(e.read())
+        except:
+            print("Some error has occured!")
+            print("Terminating Execution!!")
+    
+    elif(cmd[1]=="-re"):
+        try :
+            with open(cmd[2],'rb') as f:
+                content = f.read()
+                offset = content.index(bytes.fromhex("FFD9"))
+                f.seek(offset + 2)
+                with open("./stegextract.exe",'wb') as e:
+                    e.write(f.read())
+                print("Created file: stegextract.exe")
         except:
             print("Some error has occured!")
             print("Terminating Execution!!")
