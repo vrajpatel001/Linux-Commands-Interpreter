@@ -108,20 +108,24 @@ def dbhterminal(cmd):
             print("Command or Application non recognisable!")                         
     return
 
-while(1):
-    initial()
-    cmd=input().split(" ")
-    if cmd[0]=="dbh":
-        data = checkfile(cmd[1])
-        if data!="vraj":
-            for i in range(len(data)):
-                initial()
-                print(data[i],end="")
-                dbhterminal(str(data[i]).split())
-        print()
-    elif(cmd[0]=="exit") :
-        break
-    elif(cmd[0]=="clear") :
-        os.system("cls")
-    else:
-        dbhterminal(cmd)        
+def main():
+    while(1):
+        initial()
+        cmd=input().split(" ")
+        if cmd[0]=="dbh":
+            data = checkfile(cmd[1])
+            if data!="vraj":
+                for i in range(len(data)):
+                    initial()
+                    print(data[i],end="")
+                    dbhterminal(str(data[i]).split())
+            print()
+        elif(cmd[0]=="exit") :
+            break
+        elif(cmd[0]=="clear") :
+            os.system("cls")
+        else:
+            dbhterminal(cmd)   
+
+if __name__ == "__main__":
+    main()
